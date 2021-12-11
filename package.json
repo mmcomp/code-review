@@ -27,7 +27,8 @@
     "dev": "ts-node-dev src/api.ts",
     "seed": "ts-node-dev src/scripts/seed.ts",
     "start": "node dist/api.js",
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "watch": "tsc -w"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.22.0",

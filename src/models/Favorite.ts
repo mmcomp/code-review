@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const schema = new Schema(
   {
-    profile_id: String,
+    profile_id: Schema.Types.ObjectId,
     name: String,
     favorite1: String,
     favorite2: String,

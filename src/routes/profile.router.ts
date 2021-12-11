@@ -5,20 +5,22 @@ export var router = express.Router();
 
 router.get("/api/profile", async (req, res) => {
   var profile = await Profile.find().lean();
-  console.log(profile);
   res.json({ profile });
 });
 
 router.post("/api/profile", async (req, res) => {
-  var { email, name, nickname } = req.body;
+  const { email, name, nickname } = req.body;
 
-  let profile = await Profile.findOne({
+  const found = await Profile.findOne({
     $or: [{ email }, { nickname }],
-  }).exec();
+  }).lean();
 
-  if (!profile) {
-    profile = await Profile.create({ name, email, nickname });
+  if (found) {
+    return res.status(400).json({
+      error: `[${email}] or [${nickname}] exists in database`,
+    })
   }
 
-  res.json(profile);
+  const profile = await Profile.create({ name, email, nickname });
+  res.json({ profile });
 });

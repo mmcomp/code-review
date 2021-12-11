@@ -7,7 +7,7 @@ import { DBURL } from "../config";
 
 (async () => {
 
-  mongoose.connect(DBURL, {
+  await mongoose.connect(DBURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
@@ -21,20 +21,15 @@ import { DBURL } from "../config";
   });
   await profile.save();
 
-  const query = { _id: "6093abb3dfd9da1deeae56f2" };
-  const idProfile = await Profile.findOne(query).then((e) => {
-    return e?._id;
-  });
+  const idProfile = profile._id;
 
   const simulator = new Simulator({
     profile_id: idProfile,
-    name: `String`,
-    start_date: `01/05/2021`,
-    check_date: `01/05/2021`,
     cryptocurrency: `String`,
-    divisa: `String`,
-    Crypto_price_start: `123`,
-    Crypto_price_check: `123`,
+    dateRecorded: new Date(),
+    euros: 100,
+    price: 10.13,
+    quantity: 2,
   });
   await simulator.save();
 
@@ -47,5 +42,5 @@ import { DBURL } from "../config";
   });
   await favorite.save();
 
-  mongoose.disconnect();
+  await mongoose.disconnect();
 })();

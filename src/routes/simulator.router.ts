@@ -1,36 +1,38 @@
 import express from "express";
-import { Router } from "express";
 import { Simulator } from "../models/Simulator";
-import cors from "cors";
-
-var app = express();
-app.use(cors());
+import { Types } from "mongoose";
 
 export var router = express.Router();
 
 router.get("/api/simulator", async (req, res) => {
   var simulator = await Simulator.find().lean();
-  console.log(simulator);
   res.json({ simulator });
 });
 
 router.get("/api/simulator/:profile_id", async (req, res) => {
-  console.log("========== ");
-  let query = {};
-  var { profile_id } = req.params;
-  console.log({ profile_id });
-  query = { profile_id };
-  var data = await Simulator.find(query);
+  const { profile_id } = req.params;
+  const query = { profile_id };
+  if (!Types.ObjectId.isValid(profile_id)) {
+    return res.status(406).json({
+      error: `[${profile_id}] is not a valid Object ID`,
+    })
+  }
+  const data = await Simulator.find(query).lean();
   res.json(data);
 });
 
 router.post("/api/simulator/:profile_id", async (req, res) => {
-  var { profile_id } = req.params;
-  var newData = {
+  const { profile_id } = req.params;
+  if (!Types.ObjectId.isValid(profile_id)) {
+    return res.status(406).json({
+      error: `[${profile_id}] is not a valid Object ID`,
+    })
+  }
+
+  const simulator = new Simulator({
     ...req.body,
     profile_id,
-  };
-  console.log(newData);
-  var simulator = await Simulator.create(newData);
-  res.json(simulator);
+  });
+  await simulator.save();
+  res.json({ simulator });
 });
